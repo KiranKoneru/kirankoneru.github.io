@@ -1,0 +1,115 @@
+<!doctype html>
+<head>
+	<title>Emoji Chat Box</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<style>
+	body{
+	 margin:0;
+	 background-color:#f2f2f2;
+	}
+	#header{
+	 width:100%;
+	 height:60px;
+	 background-color:#333;
+	}
+	#header h1{
+	 width:800px;
+	 margin-left:19%;
+	 color: white;
+	 padding:1%;
+	}
+	#content{
+	 width:800px;
+	 height:300px;
+	 margin-left:20%;
+	 border: 1px solid #333;
+	 background-color:white;
+	 margin-top:20px;
+	 overflow:auto;
+	}
+	#textBox{
+	 width:600px;
+	 height:50px;
+	 margin:5px 20%;
+	 border:1px solid black;
+	 overflow:auto;
+	}
+	#subBtn{
+	 font-size:25px;	
+	 margin-left:20%;
+	}
+	img{
+	 width:18px;
+	 height:18px;
+	 position:relative;
+	 top:3px;
+	}
+	</style>
+</head>
+<body>
+	<div id='header'> 
+	 <h1>Emoji Chat Application</h1>
+	</div>
+	<div id="content"></div>
+	<div id="textBox" contenteditable="true"></div>
+	<button id="subBtn">Send</button>
+	
+	<script>
+		$(function(){
+			 var usrMsg;
+			 $('#textBox').keyup(function(event){
+				  if(event.which!=13){
+					replaceEmoji();
+				  }
+				  if(event.which==13){
+					sendMsg();
+				  }
+			 });
+			 $("#subBtn").click(function(){
+			    sendMsg();
+			 });
+			 function sendMsg(){
+				  if(usrMsg=='') return;
+				  var lastMsg = $('#content').html();
+				  lastMsg +=usrMsg+'<br/>';
+				  $('#content').html(lastMsg);
+				  $('#textBox').html('');
+				  usrMsg='';
+				  $('#content').scrollTop($('#content').prop('scrollHeight'));
+			 }
+			function replaceEmoji(){
+				usrMsg = $('#textBox').html();
+				var emoticons = {
+					':)'  : 'smile.jpg',
+					'&lt;3'  : 'heart.jpg',
+			    }
+				usrMsg = usrMsg.replace(/:\)|&lt;3+/g, function (match) {
+					if(emoticons[match]){
+						return '<img src="images/'+emoticons[match]+'"/>';
+					}
+                     return match;
+                });
+				$('#textBox').html(usrMsg);
+				placeCaretAtEnd(($('#textBox').get(0)));
+			 }
+			 function placeCaretAtEnd(elem) {
+					elem.focus();
+					if (typeof window.getSelection != "undefined"
+							&& typeof document.createRange != "undefined") {
+						var range = document.createRange();
+						range.selectNodeContents(elem);
+						range.collapse(false);
+						var sel = window.getSelection();
+						sel.removeAllRanges();
+						sel.addRange(range);
+					} else if (typeof document.body.createTextRange != "undefined") {
+						var textRange = document.body.createTextRange();
+						textRange.moveToElementText(elem);
+						textRange.collapse(false);
+						textRange.select();
+					}
+			 }
+		 
+		});
+	</script>
+</body>
